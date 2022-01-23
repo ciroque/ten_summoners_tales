@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor IexUser
+boundary TenSummonersTales
+entity StandardPoller
+entity ServiceClient
+entity SummonerTracker
+entity MatchReporter
+boundary ExternalApi
+
+IexUser -> StandardPoller : follow_summoner(summoner_id, polling_period, poll_count)
+IexUser <- StandardPoller : {:ok} or {:error, message}
+loop poll_count times
+
+  StandardPoller -> ServiceClient : poll
+  ServiceClient -> ExternalApi
+  ServiceClient <- ExternalApi
+  StandardPoller <- ServiceClient : [...]
+
+  StandardPoller -> SummonerTracker : track(...)
+  SummonerTracker -> MatchReporter : report(summoner, summoner_competitor)
+
+  StandardPoller -> StandardPoller : handle_ca[ll|st]
+end
+
+@enduml
