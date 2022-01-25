@@ -13,7 +13,36 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/parse_trans" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/hackney" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ssl_verify_fun" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mimerl" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/httpoison" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/certifi" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/metrics" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/unicode_util_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/idna" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/parse_trans" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/hackney" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/ssl_verify_fun" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/mimerl" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/httpoison" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/mox" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/certifi" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/metrics" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/unicode_util_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/idna" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mox" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="httpoison" level="project" />
+    <orderEntry type="library" name="hackney" level="project" />
+    <orderEntry type="library" name="mimic" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="httparrot" level="project" />
+    <orderEntry type="library" name="earmark" level="project" />
+    <orderEntry type="library" name="ex_doc" level="project" />
+    <orderEntry type="library" name="dialyxir" level="project" />
+    <orderEntry type="library" name="mox" level="project" />
   </component>
 </module>

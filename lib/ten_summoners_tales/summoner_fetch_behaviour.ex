@@ -8,7 +8,7 @@ defmodule TenSummonersTales.SummonerFetchBehaviour do
 
     ## Parameters
 
-    - summoner_id: String representing the id of the Summoner to follow.
+    - summoner_name: String representing the name of the Summoner to follow.
     - polling_period: Integer specifying the polling frequency in milliseconds; i.e.: one second = 1_000, one minute = 60_000.
     - poll_count: Integer specifying the number of polling operations to perform.
 
