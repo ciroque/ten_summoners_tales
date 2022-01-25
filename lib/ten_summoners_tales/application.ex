@@ -10,6 +10,7 @@ defmodule TenSummonersTales.Application do
     children = [
       # Starts a worker by calling: TenSummonersTales.Worker.start_link(arg)
       # {TenSummonersTales.Worker, arg}
+      TenSummonersTales.Poller
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

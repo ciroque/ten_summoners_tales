@@ -1,10 +1,10 @@
-defmodule TenSummonersTales.PollerBehaviour do
+defmodule TenSummonersTales.SummonerFetchBehaviour do
   @moduledoc """
     Defines the behaviour expected to be implemented by a conforming implementation of a TenSummonersTales.Poller module.
   """
 
   @doc """
-    Initiates a polling operation to follow the specified summoner.
+    Fetches the five most recent match players and initiates a polling operation to follow the returned summoners.
 
     ## Parameters
 
@@ -18,5 +18,5 @@ defmodule TenSummonersTales.PollerBehaviour do
     iex> TenSummonersTales.Poller.follow_summoner("ABCD1234", 60_000, 60)
 
   """
-  @callback follow_summoner(String.t(), integer(), integer()) :: {:ok} | {:error, String.t()}
+  @callback fetch_summoners_opponents(String.t(), integer(), integer()) :: {:ok, list(String.t())} | {:error, String.t()}
 end
