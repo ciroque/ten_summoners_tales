@@ -19,7 +19,7 @@ defmodule TenSummonersTales.RiotApiClientTest do
 
   describe "fetch_summoner/2" do
     test "assembles url correctly" do
-      summoner_name = "ciroque"
+      summoner_name = "summoner"
       response_body = "{\"id\":\"s_tnTARp5nndcFOl4tjOc3JxxIqoLJX-VwVHTBRXumBsa8k\",\"accountId\":\"WJIad3koRjnn6DlrGrxPsvTN1f8hFVMl_YxCLfDcFGtFXg\",\"puuid\":\"a6KL4-VnQsIu7KbHE4b2oOMyC21tKar_u33_5Qi-YwWnwq1oR8H934MnUSfFDu6DMKW0rQsWSUUq0Q\",\"name\":\"#{summoner_name}\",\"profileIconId\":12,\"revisionDate\":1495785743000,\"summonerLevel\":8}"
 
       expect(MockHttp, :get, fn url, headers ->
@@ -29,7 +29,7 @@ defmodule TenSummonersTales.RiotApiClientTest do
         {:ok, %HTTPoison.Response{status_code: 200, body: response_body}}
       end)
 
-      %{name: name} = RiotApiClient.fetch_summoner("ciroque", "NA1")
+      %{name: name} = RiotApiClient.fetch_summoner(summoner_name, "NA1")
 
       assert name == summoner_name
     end
