@@ -5,7 +5,7 @@ defmodule TenSummonersTales.Poller do
 
   require Logger
 
-  @behaviour TenSummonersTales.SummonerFetchBehaviour
+  @behaviour TenSummonersTales.FetchSummonerBehaviour
 
   use GenServer
 
