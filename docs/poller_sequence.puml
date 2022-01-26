@@ -5,25 +5,36 @@ autonumber
 
 actor IexUser
 boundary TenSummonersTales
-entity StandardPoller
-entity ServiceClient
+entity Summoner
+entity RiotApiClient
 entity SummonerTracker
-entity MatchReporter
-boundary ExternalApi
+boundary RiotDevelopmentApi
 
-IexUser -> StandardPoller : follow_summoner(summoner_id, polling_period, poll_count)
-IexUser <- StandardPoller : {:ok} or {:error, message}
-loop poll_count times
+IexUser -> Summoner : fetch_summoner_opponents(summoner_name, region)
+Summoner -> RiotApiClient : fetch_summoner
+RiotApiClient -> RiotDevelopmentApi : Summoner-V4 (/lol/summoner/v4/summoners/by-name/{summonerName})
+RiotApiClient <- RiotDevelopmentApi : {summoner}
+Summoner -> RiotApiClient : fetch_matches(puuid)
+RiotApiClient -> RiotDevelopmentApi : Match-V5 (/lol/match/v5/matches/by-puuid/{puuid}/ids)
+RiotApiClient <- RiotDevelopmentApi : [matches]
 
-  StandardPoller -> ServiceClient : poll
-  ServiceClient -> ExternalApi
-  ServiceClient <- ExternalApi
-  StandardPoller <- ServiceClient : [...]
-
-  StandardPoller -> SummonerTracker : track(...)
-  SummonerTracker -> MatchReporter : report(summoner, summoner_competitor)
-
-  StandardPoller -> StandardPoller : handle_ca[ll|st]
+loop match-length times
+  Summoner -> RiotApiClient : fetch_match(match_id)
+  RiotApiClient -> RiotDevelopmentApi : Match-V5 (/lol/match/v5/matches/{matchId})
+  RiotApiClient <- RiotDevelopmentApi : {match}
+  Summoner <- RiotApiClient : fetch_match(match_id)
 end
+
+loop unique-puuid-from-matches-count times
+  Summoner -> RiotApiClient : fetch_summoner(summoner_name, region)
+  RiotApiClient -> RiotDevelopmentApi : Summoner-V4
+  RiotApiClient <- RiotDevelopmentApi : {summoner}
+  Summoner <- RiotApiClient : {summoner}
+end
+note left : ParticipantDto from the match contains the summonerName and puuid
+
+Summoner -> SummonerTracker : track_summoners([summoner])
+
+IexUser <- Summoner : [summoner names]
 
 @enduml
