@@ -4,19 +4,22 @@
 autonumber
 
 actor IexUser
-boundary TenSummonersTales
+entity TenSummonersTales
 entity Summoner
 entity RiotApiClient
 entity SummonerTracker
 boundary RiotDevelopmentApi
 
-IexUser -> Summoner : fetch_summoner_opponents(summoner_name, region)
+IexUser -> TenSummonersTales : track_summoner(name, region)
+TenSummonersTales -> Summoner : fetch_summoner_opponents(summoner_name, region)
 Summoner -> RiotApiClient : fetch_summoner
 RiotApiClient -> RiotDevelopmentApi : Summoner-V4 (/lol/summoner/v4/summoners/by-name/{summonerName})
 RiotApiClient <- RiotDevelopmentApi : {summoner}
-Summoner -> RiotApiClient : fetch_matches(puuid)
+Summoner <- RiotApiClient : {summoner}
+Summoner -> RiotApiClient : fetch_matches(puuid, region)
 RiotApiClient -> RiotDevelopmentApi : Match-V5 (/lol/match/v5/matches/by-puuid/{puuid}/ids)
 RiotApiClient <- RiotDevelopmentApi : [matches]
+Summoner <- RiotApiClient : [{match}]
 
 loop match-length times
   Summoner -> RiotApiClient : fetch_match(match_id)
@@ -25,16 +28,10 @@ loop match-length times
   Summoner <- RiotApiClient : {match}
 end
 
-loop unique-summonerNames-from-matches-count times
-  Summoner -> RiotApiClient : fetch_summoner(summoner_name, region)
-  RiotApiClient -> RiotDevelopmentApi : Summoner-V4
-  RiotApiClient <- RiotDevelopmentApi : {summoner}
-  Summoner <- RiotApiClient : {summoner}
-end
-note left : ParticipantDto from the match contains the summonerName and puuid
+TenSummonersTales <- Summoner : [{summoner name, puuid}]
 
-Summoner -> SummonerTracker : track_summoners([summoner])
+TenSummonersTales -> SummonerTracker : track_summoners([summoner])
 
-IexUser <- Summoner : [summoner names]
+IexUser <- TenSummonersTales : [summoner names]
 
 @enduml

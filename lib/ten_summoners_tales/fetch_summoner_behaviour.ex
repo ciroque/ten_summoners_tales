@@ -4,7 +4,7 @@ defmodule TenSummonersTales.FetchSummonerBehaviour do
   """
 
   @doc """
-    Fetches the five most recent match players and initiates a polling operation to follow the returned summoners.
+    Fetches the summoners from the five most recent matches.
 
     ## Parameters
 
@@ -12,5 +12,5 @@ defmodule TenSummonersTales.FetchSummonerBehaviour do
     - region: String representing the name of the region to search.
 
   """
-  @callback fetch_summoner_opponents(String.t(), String.t()) :: {:ok, list(String.t())} | {:error, String.t()}
+  @callback fetch_summoner_opponents(String.t(), String.t()) :: {:ok, list(map())} | {:error, String.t()}
 end
