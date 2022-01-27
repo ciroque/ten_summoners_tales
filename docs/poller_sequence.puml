@@ -22,10 +22,10 @@ loop match-length times
   Summoner -> RiotApiClient : fetch_match(match_id)
   RiotApiClient -> RiotDevelopmentApi : Match-V5 (/lol/match/v5/matches/{matchId})
   RiotApiClient <- RiotDevelopmentApi : {match}
-  Summoner <- RiotApiClient : fetch_match(match_id)
+  Summoner <- RiotApiClient : {match}
 end
 
-loop unique-puuid-from-matches-count times
+loop unique-summonerNames-from-matches-count times
   Summoner -> RiotApiClient : fetch_summoner(summoner_name, region)
   RiotApiClient -> RiotDevelopmentApi : Summoner-V4
   RiotApiClient <- RiotDevelopmentApi : {summoner}

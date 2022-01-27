@@ -8,17 +8,41 @@ defmodule TenSummonersTales.RiotApiClient do
     TenSummonersTales.RiotApiClient.fetch_summoner("ciroque", "na1")
   """
   def fetch_summoner(summoner_name, region) do
-    host = host(region)
-    path = summoner_name_path(summoner_name)
-    x_riot_token = ["X-Riot-Token": riot_api_key()]
-    url = "#{host}#{path}"
+    url(region, summoner_name_path(summoner_name)) |> fetch()
+  end
 
+  @impl true
+  @doc """
+    TenSummonersTales.RiotApiClient.fetch_matches("Q2OArd-PlZFka3pmtHfXrjY9M8nAlRtfa8iCb_c3Jk5kXmDAKxjy7U4DpT5Hcm-6WQvaX4lVfEFbCQ", "AMERICAS")
+  """
+  def fetch_matches(puuid, region, match_count \\ 5) do
+    url(region, matches_by_puuid_path(puuid, match_count)) |> fetch()
+  end
+
+  @impl true
+  @doc """
+    TenSummonersTales.RiotApiClient.fetch_match("NA1_4187683997", "AMERICAS")
+  """
+  def fetch_match(match_id, region) do
+    url(region, match_by_id_path(match_id)) |> fetch()
+  end
+
+  defp fetch(url) do
     url
-    |> http_adapter().get(x_riot_token)
+    |> http_adapter().get(riot_api_key_header())
     |> handle_response()
   end
 
-  def riot_api_key() do
+  defp riot_api_key_header() do
+    ["X-Riot-Token": riot_api_key()]
+  end
+
+  defp url(region, path) do
+    host = host(region)
+    "#{host}#{path}"
+  end
+
+  defp riot_api_key() do
     Application.get_env(:ten_summoners_tales, :riot_development_api_key)
   end
 
@@ -39,7 +63,18 @@ defmodule TenSummonersTales.RiotApiClient do
     "https://#{region}.#{host}"
   end
 
-  def summoner_name_path(summoner_name) do
+  defp match_by_id_path(matchId) do
+    Application.get_env(:ten_summoners_tales, :riot_development_api_match_path)
+    |> String.replace("{matchId}", matchId)
+  end
+
+  defp matches_by_puuid_path(puuid, count) do
+    Application.get_env(:ten_summoners_tales, :riot_development_api_matches_path)
+    |> String.replace("{puuid}", puuid)
+    |> String.replace("{count}", "#{count}")
+  end
+
+  defp summoner_name_path(summoner_name) do
     path = Application.get_env(:ten_summoners_tales, :riot_development_api_summoner_path)
 
     "#{path}#{summoner_name}"

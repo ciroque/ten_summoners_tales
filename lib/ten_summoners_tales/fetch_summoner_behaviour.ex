@@ -10,14 +10,7 @@ defmodule TenSummonersTales.FetchSummonerBehaviour do
 
     - summoner_name: String representing the name of the Summoner to follow.
     - region: String representing the name of the region to search.
-    - polling_period: Integer specifying the polling frequency in milliseconds; i.e.: one second = 1_000, one minute = 60_000.
-    - poll_count: Integer specifying the number of polling operations to perform.
-
-    ## Examples
-
-    - Follow a Summoner, polling every minute for one hour...
-    iex> TenSummonersTales.Poller.follow_summoner("ABCD1234", 60_000, 60)
 
   """
-  @callback fetch_summoners_opponents(String.t(), String.t(), integer(), integer()) :: {:ok, list(String.t())} | {:error, String.t()}
+  @callback fetch_summoner_opponents(String.t(), String.t()) :: {:ok, list(String.t())} | {:error, String.t()}
 end

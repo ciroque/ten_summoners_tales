@@ -5,8 +5,6 @@ defmodule TenSummonersTales.Poller do
 
   require Logger
 
-  @behaviour TenSummonersTales.FetchSummonerBehaviour
-
   use GenServer
 
   def start_link(_opts \\ []) do
@@ -28,20 +26,4 @@ defmodule TenSummonersTales.Poller do
 
     {:noreply, state}
   end
-
-  def fetch_summoners_opponents(summoner_id, polling_period \\ 60_000, poll_count \\ 60) do
-    Logger.info("fetch_summoners_opponents : #{summoner_id}")
-
-    # TODO: Fetch the list of recent summoners
-    summoners = []
-
-    summoners_matches = summoners |> Enum.map(fn summoner -> %{summoner: summoner, opponents: %{}} end)
-
-    # kick off the polling process
-    Process.send(__MODULE__, {:follow, summoners, polling_period, poll_count, summoners_matches}, [])
-
-    {:ok, summoners}
-  end
 end
-
-##
