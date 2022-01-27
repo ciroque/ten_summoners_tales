@@ -21,6 +21,8 @@ defmodule TenSummonersTales.Summoner do
       #      %{puuid: puuid, name: participant_name}
       summonerName
     end)
+    |> Enum.sort
+    |> Enum.uniq
 
   end
 
