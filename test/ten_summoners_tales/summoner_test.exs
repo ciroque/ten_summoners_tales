@@ -35,7 +35,7 @@ defmodule TenSummonersTales.SummonerTest do
         fn match_id, _region ->
           assert match_ids() |> Enum.member?(match_id)
 
-          %{info: %{ participants: []}}
+          empty_match_participants()
         end)
   end
 
@@ -56,6 +56,10 @@ defmodule TenSummonersTales.SummonerTest do
 
       %{name: summoner_name(), puuid: puuid()}
     end)
+  end
+
+  defp empty_match_participants() do
+    %{info: %{ participants: []}}
   end
 
   defp match_ids() do

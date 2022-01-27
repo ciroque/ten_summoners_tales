@@ -1,20 +1,18 @@
 # TenSummonersTales
 
-Implementation to track Summoner's game play in the [TODO] API.
+Implementation to track Summoner's game play in the Riot Developer API.
 
 ## High level logic flow
 
-![Polling Sequence](./docs/poller_sequence.svg)
+![Summoner Lookup Sequence](./docs/summoner_lookup_sequence.svg)
 
 ## Running
 
 ```bash
 iex -S mix
 
-iex(1)> TenSummonersTales.Poller.fetch_summoners_opponents("ciroque", 500)
+iex(1)> TenSummonersTales.track_summoner("ciroque", "NA")
 ```
-
-
 
 ## NOTES
 - Going to need a map between the regions for the Summoner API and the Match API
