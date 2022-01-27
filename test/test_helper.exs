@@ -5,3 +5,4 @@ Mox.defmock(Http.Mock, for: TenSummonersTales.HttpBehaviour)
 
 Application.put_env(:ten_summoners_tales, :http_adapter, Http.Mock)
 Application.put_env(:ten_summoners_tales, :service_client, TenSummonersTales.RiotDevelopmentClientMock)
+Application.put_env(:ten_summoners_tales, :riot_development_api_key, ";kajnervpaiuernv;piuabn2345r;likubn")

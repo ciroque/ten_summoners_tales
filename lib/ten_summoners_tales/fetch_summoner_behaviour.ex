@@ -12,5 +12,5 @@ defmodule TenSummonersTales.FetchSummonerBehaviour do
     - region: String representing the name of the region to search.
 
   """
-  @callback fetch_summoner_opponents(String.t(), String.t()) :: {:ok, list(map())} | {:error, String.t()}
+  @callback retrieve_summoner_opponents(String.t(), String.t()) :: {:ok, list(map())} | {:error, String.t()}
 end

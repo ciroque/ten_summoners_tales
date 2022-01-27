@@ -1,8 +1,7 @@
 defmodule TenSummonersTalesTest do
   use ExUnit.Case
-  doctest TenSummonersTales
+#  doctest TenSummonersTales
 
-  test "greets the world" do
-    assert TenSummonersTales.hello() == :world
-  end
+  # TODO...
+
 end

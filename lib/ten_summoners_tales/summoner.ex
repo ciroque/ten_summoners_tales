@@ -14,12 +14,13 @@ defmodule TenSummonersTales.Summoner do
       `TenSummonersTales.Summoner.fetch_summoner_opponents("bigfatjuicer", "NA")`
       `TenSummonersTales.Summoner.fetch_summoner_opponents("Jobless Canadian", "NA")`
   """
-  def fetch_summoner_opponents(summoner_name, region) do
+  def retrieve_summoner_opponents(summoner_name, region) do
     region = String.upcase(region)
     with {:ok, match_region: match_region} <- routing_map(region),
          %{name: _name, puuid: puuid} <- riot_api().fetch_summoner(summoner_name, region) do
 
-      participants = retrieve_participants(puuid, match_region) |> extract_participant_fields
+      participants = retrieve_matches(puuid, match_region)
+      |> extract_participant_fields
 
       {:ok, participants: participants}
     else
@@ -34,7 +35,7 @@ defmodule TenSummonersTales.Summoner do
     end)
   end
 
-  defp retrieve_participants(puuid, region) do
+  defp retrieve_matches(puuid, region) do
     riot_api().fetch_matches(puuid, region)
     |> Enum.flat_map(fn matchId ->
       %{info: %{ participants: participants }} = riot_api().fetch_match(matchId, region)

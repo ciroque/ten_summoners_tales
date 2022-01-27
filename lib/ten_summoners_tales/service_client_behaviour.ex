@@ -22,7 +22,7 @@ defmodule TenSummonersTales.ServiceClientBehaviour do
     - region: String representing the name of the region to search. NOTE: does nbot match region from Summoner endpoint.
     - match_count: Integer representing the number of matches to retrieve.
   """
-  @callback fetch_matches(String.t(), String.t(), integer()) :: {:ok, list(String.t())} | {:error, String.t()}
+  @callback fetch_matches(String.t(), String.t()) :: {:ok, list(String.t())} | {:error, String.t()}
 
   @doc """
     Uses the Riot Development API to fetch details of a match.

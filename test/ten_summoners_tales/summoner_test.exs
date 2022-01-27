@@ -23,7 +23,7 @@ defmodule TenSummonersTales.SummonerTest do
       expect_fetch_matches_on_mock()
       expect_fetch_match_on_mock()
 
-      Summoner.fetch_summoner_opponents(summoner_name(), region())
+      Summoner.retrieve_summoner_opponents(summoner_name(), region())
     end
   end
 
@@ -41,7 +41,7 @@ defmodule TenSummonersTales.SummonerTest do
 
   defp expect_fetch_matches_on_mock() do
     ServiceClientMock
-    |> expect(:fetch_matches, fn puuid, _, _ ->
+    |> expect(:fetch_matches, fn puuid, _ ->
       assert puuid == puuid()
 
       match_ids()
@@ -71,7 +71,7 @@ defmodule TenSummonersTales.SummonerTest do
   end
 
   defp region() do
-    "region"
+    "na1"
   end
 
   defp summoner_name() do
