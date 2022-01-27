@@ -47,9 +47,7 @@ defmodule TenSummonersTales.Summoner do
     Application.get_env(:ten_summoners_tales, :service_client, TenSummonersTales.RiotApiClient)
   end
 
-  @doc """
-    Sauce: https://developer.riotgames.com/docs/lol#_routing-values
-  """
+  # Sauce: https://developer.riotgames.com/docs/lol#_routing-values
   defp routing_map(region) do
     case region do
       region when region in ["BR1", "LA1", "LA2", "LAS", "NA1", "OC1", "OCE"] -> {:ok, match_region: "AMERICAS"}
