@@ -37,9 +37,32 @@ defmodule TenSummonersTales.SummonerTracker do
   end
 
   def handle_info(:follow, %{count: count, participant_matches: participant_matches, match_region: match_region} = state) do
+    IO.puts("#{DateTime.utc_now} Polling...")
     count = count - 1
-    participant_matches = participant_matches
+
+    started = :os.system_time(:millisecond) # Poor man's drift compensation, meh.
+    participant_matches = participant_matches |> retrieve_new_matches(match_region)
+    ended = :os.system_time(:millisecond)
+
+    state = state
+    |> Map.put(:count, count)
+    |> Map.put(:participant_matches, participant_matches)
+
+    # TODO: Putting timing adjustments into this...
+    # This will suffer from drift as the length of the calls to the Riot API fluctuate.
+    # Could consider `spawn_link`, would then have to figure out how to handle updating state
+    # Could also simply grab the time before and after calling `retrieve_new_matches` and subtracting the difference from the polling_period()
+    if count > 0 do
+      Process.send_after(self(), :follow, polling_period() - (ended - started))
+    end
+
+    {:noreply, state}
+  end
+
+  defp retrieve_new_matches(participant_matches, match_region) do
+    participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
+      :timer.sleep(80) ## TODO: Poor mans throttling, ideally the requests would be put into batches and throttled...
       case riot_api().fetch_matches(puuid, match_region) do
         {:ok, match_ids} ->
           new_matches = match_ids -- matches
@@ -54,21 +77,10 @@ defmodule TenSummonersTales.SummonerTracker do
           participant
       end
     end)
-
-    state = state
-    |> Map.put(:count, count)
-    |> Map.put(:participant_matches, participant_matches)
-
-    # TODO: Putting timing adjustments into this...
-    if count > 0 do
-      Process.send_after(self(), :follow, polling_period())
-    end
-
-    {:noreply, state}
   end
 
   defp polling_period() do
-    Application.get_env(:ten_summoners_tales, :polling_period, 1_000)
+    Application.get_env(:ten_summoners_tales, :polling_period, 60 * 1_000)
   end
 
   defp poll_count() do
