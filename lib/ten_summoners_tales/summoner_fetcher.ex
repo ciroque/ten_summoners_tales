@@ -24,7 +24,7 @@ defmodule TenSummonersTales.SummonerFetcher do
         {:ok, participants: participant_names, match_participants: match_participants}
 
     else
-      {:short, []} -> {:ok, participants: []}
+      {:short, :no_matches} -> {:short, :no_matches}
       {:error, message} -> {:error, message}
     end
   end
@@ -36,9 +36,6 @@ defmodule TenSummonersTales.SummonerFetcher do
     {:ok, match_participants: match_participants} <- matches |> extract_match_participants() do
 
       {:ok, participant_names: participant_names, match_participants: match_participants}
-
-    else
-      {:short, :no_matches} -> {:short, []}
     end
   end
 

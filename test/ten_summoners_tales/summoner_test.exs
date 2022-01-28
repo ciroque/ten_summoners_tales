@@ -59,7 +59,7 @@ defmodule TenSummonersTales.SummonerTest do
   end
 
   defp empty_match_participants() do
-    %{info: %{ participants: []}}
+    %{metadata: %{matchId: "matchId2112"}, info: %{ participants: []}}
   end
 
   defp match_ids() do
