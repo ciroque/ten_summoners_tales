@@ -17,18 +17,12 @@ defmodule TenSummonersTales do
     case fetcher().retrieve_summoner_opponents(summoner_name, region) do
       {:error, [message: message]} -> "An error occurred processing your request: #{message}"
       {:short, :no_matches} -> "#{summoner_name} has not participated in any matches."
-      {:ok, participants: participants, match_participants: _match_participants} ->
+      {:ok, participant_names: participant_names, participant_matches: participant_matches} ->
 
-        participants
-        |> queue_polling()
+        participant_matches |> tracker().track_summoners()
+
+        participant_names
     end
-  end
-
-  defp queue_polling(participants) do
-    participants
-    |> tracker().track_summoners()
-
-    participants
   end
 
   defp fetcher() do

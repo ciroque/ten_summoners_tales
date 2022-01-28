@@ -10,16 +10,18 @@ defmodule TenSummonersTalesTest do
   setup :verify_on_exit!
 
   describe "track_summoner" do
-    test "..." do
+    test "happy path" do
 
       FetchSummonerMock
       |> expect(:retrieve_summoner_opponents, fn _, _ ->
 
-        {:ok, participants: participants()}
+        {:ok, participant_names: participant_names(), participant_matches: participant_matches()}
       end)
 
       TrackSummonerMock
-      |> expect(:track_summoners, fn _ ->
+      |> expect(:track_summoners, fn actual_participant_matches ->
+        assert actual_participant_matches == participant_matches()
+
         {:ok}
       end)
 
@@ -29,11 +31,16 @@ defmodule TenSummonersTalesTest do
     end
   end
 
-  defp participants() do
+  defp participant_names() do
+    [summoner_name()]
+  end
+
+  defp participant_matches() do
     [
       %{
         name: summoner_name(),
-        puuid: "puuid"
+        puuid: "puuid",
+        matches: []
       }
     ]
   end
