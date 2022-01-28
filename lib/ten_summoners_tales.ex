@@ -32,7 +32,7 @@ defmodule TenSummonersTales do
   end
 
   defp fetcher() do
-    Application.get_env(:ten_summoners_tales, :fetcher, TenSummonersTales.SummonerFetcher)
+    Application.get_env(:ten_summoners_tales, :fetcher, TenSummonersTales.SummonerRetriever)
   end
 
   defp tracker() do

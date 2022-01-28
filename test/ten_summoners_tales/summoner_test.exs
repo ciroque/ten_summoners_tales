@@ -2,18 +2,18 @@ defmodule TenSummonersTales.SummonerTest do
   use ExUnit.Case
 
   alias TenSummonersTales.RiotDevelopmentClientMock, as: ServiceClientMock
-  alias TenSummonersTales.SummonerFetcher
+  alias TenSummonersTales.SummonerRetriever
 
   import Mox
 
   @moduletag :capture_log
 
-  doctest SummonerFetcher
+  doctest SummonerRetriever
 
   setup :verify_on_exit!
 
   test "module exists" do
-    assert is_list(SummonerFetcher.module_info())
+    assert is_list(SummonerRetriever.module_info())
   end
 
   describe "fetch_summoner_opponents" do
@@ -23,7 +23,7 @@ defmodule TenSummonersTales.SummonerTest do
       expect_fetch_matches_on_mock()
       expect_fetch_match_on_mock()
 
-      SummonerFetcher.retrieve_summoner_opponents(summoner_name(), region())
+      SummonerRetriever.retrieve_summoner_opponents(summoner_name(), region())
     end
   end
 

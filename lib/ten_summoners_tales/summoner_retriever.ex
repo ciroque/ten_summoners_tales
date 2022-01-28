@@ -1,4 +1,4 @@
-defmodule TenSummonersTales.SummonerFetcher do
+defmodule TenSummonersTales.SummonerRetriever do
   @moduledoc false
 
   @behaviour TenSummonersTales.FetchSummonerBehaviour
@@ -10,9 +10,9 @@ defmodule TenSummonersTales.SummonerFetcher do
       A list of maps containing the summoners and their associated puuids.
 
     Examples:
-      `TenSummonersTales.SummonerFetcher.fetch_summoner_opponents("bigfatjuicer", "NA")`
-      `TenSummonersTales.SummonerFetcher.fetch_summoner_opponents("bigfatjuicer", "NA")`
-      `TenSummonersTales.SummonerFetcher.fetch_summoner_opponents("Jobless Canadian", "NA")`
+      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("bigfatjuicer", "NA")`
+      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("bigfatjuicer", "NA")`
+      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("Jobless Canadian", "NA")`
   """
   def retrieve_summoner_opponents(summoner_name, region) do
     region = String.upcase(region)
