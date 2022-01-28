@@ -1,7 +1,7 @@
 defmodule TenSummonersTales.SummonerRetriever do
   @moduledoc false
 
-  @behaviour TenSummonersTales.FetchSummonerBehaviour
+  @behaviour TenSummonersTales.RetrieveSummonerBehaviour
 
   @impl true
   @doc """

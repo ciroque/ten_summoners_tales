@@ -1,6 +1,6 @@
-defmodule TenSummonersTales.FetchSummonerBehaviour do
+defmodule TenSummonersTales.RetrieveSummonerBehaviour do
   @moduledoc """
-    Defines the behaviour expected to be implemented by a conforming implementation of a TenSummonersTales.Poller module.
+    Defines the behaviour expected to be implemented by a conforming implementation of a TenSummonersTales.SummonerRetriever module.
   """
 
   @doc """
