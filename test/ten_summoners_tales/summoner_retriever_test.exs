@@ -1,4 +1,4 @@
-defmodule TenSummonersTales.SummonerTest do
+defmodule TenSummonersTales.SummonerRetrieverTest do
   use ExUnit.Case
 
   alias TenSummonersTales.RiotDevelopmentClientMock, as: ServiceClientMock

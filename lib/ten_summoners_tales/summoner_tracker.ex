@@ -38,7 +38,6 @@ defmodule TenSummonersTales.SummonerTracker do
 
   def handle_info(:follow, %{count: count, participant_matches: participant_matches, match_region: match_region} = state) do
     count = count - 1
-    Logger.info(":follow... count(#{count})")
     participant_matches = participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
       case riot_api().fetch_matches(puuid, match_region) do
@@ -49,11 +48,7 @@ defmodule TenSummonersTales.SummonerTracker do
             IO.puts("Summoner <#{name}> completed match <#{match_id}>")
           end)
 
-          updated_matches = matches ++ new_matches
-
-#          IO.puts("#{name}, matches(#{matches |> Enum.join(",")}), updated_matches(#{updated_matches |> Enum.join(",")})")
-
-          participant |> Map.put(:matches, updated_matches)
+          participant |> Map.put(:matches, matches ++ new_matches)
 
         {:error, :rate_limit_exceeded} ->
           participant
@@ -66,7 +61,6 @@ defmodule TenSummonersTales.SummonerTracker do
 
     # TODO: Putting timing adjustments into this...
     if count > 0 do
-      IO.puts("rescheduling work...")
       Process.send_after(self(), :follow, polling_period())
     end
 

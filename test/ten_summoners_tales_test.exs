@@ -4,7 +4,7 @@ defmodule TenSummonersTalesTest do
   import Mox
 
   alias TenSummonersTales
-  alias TenSummonersTales.FetchSummonerMock
+  alias TenSummonersTales.RetrieveSummonerMock
   alias TenSummonersTales.TrackSummonerMock
 
   setup :verify_on_exit!
@@ -12,7 +12,7 @@ defmodule TenSummonersTalesTest do
   describe "track_summoner" do
     test "happy path" do
 
-      FetchSummonerMock
+      RetrieveSummonerMock
       |> expect(:retrieve_summoner_opponents, fn _, _ ->
 
         {:ok, participant_names: participant_names(), participant_matches: participant_matches(), match_region: region()}
