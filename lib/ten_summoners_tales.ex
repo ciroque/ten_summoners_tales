@@ -17,14 +17,17 @@ defmodule TenSummonersTales do
     case fetcher().retrieve_summoner_opponents(summoner_name, region) do
       {:error, [message: message]} -> "An error occurred processing your request: #{message}"
       {:ok, participants: []} -> "#{summoner_name} has not participated in any matches."
-      {:ok, participants: participants} ->
+      {:ok, participants: participants, match_participants: _match_participants} ->
+
+#        IO.inspect(match_participants)
+
         participants
         |> queue_polling()
-        |> format_results()
+#        |> format_results()
     end
   end
 
-  defp format_results(participants), do: participants |> Enum.map(fn %{name: name} -> name end) |> Enum.uniq |> Enum.sort
+#  defp format_results(participants), do: participants |> Enum.map(fn %{name: name} -> name end) |> Enum.uniq |> Enum.sort
 
   defp queue_polling(participants) do
     participants
