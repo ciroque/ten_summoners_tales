@@ -1,11 +1,17 @@
-defmodule TenSummonersTales.Poller do
+defmodule TenSummonersTales.SummonerTracker do
   @moduledoc """
     This module implements the TemSummonersTales.PollerBehaviour to allow polling Summoners from the TODO [API name]
   """
 
+  @behaviour TenSummonersTales.TrackSummonerBehaviour
+
   require Logger
 
   use GenServer
+
+  def track_summoners(_summoners) do
+
+  end
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)

@@ -24,4 +24,4 @@ iex(1)> TenSummonersTales.track_summoner("boycold", "na1")
 
 ## TODO
 - More testing, especially around error conditions
-- 
+- `defstruct Summoner { name: String.t(), puuid: String.t() }` 

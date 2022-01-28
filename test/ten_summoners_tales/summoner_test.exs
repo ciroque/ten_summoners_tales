@@ -2,18 +2,18 @@ defmodule TenSummonersTales.SummonerTest do
   use ExUnit.Case
 
   alias TenSummonersTales.RiotDevelopmentClientMock, as: ServiceClientMock
-  alias TenSummonersTales.Summoner
+  alias TenSummonersTales.SummonerFetcher
 
   import Mox
 
   @moduletag :capture_log
 
-  doctest Summoner
+  doctest SummonerFetcher
 
   setup :verify_on_exit!
 
   test "module exists" do
-    assert is_list(Summoner.module_info())
+    assert is_list(SummonerFetcher.module_info())
   end
 
   describe "fetch_summoner_opponents" do
@@ -23,7 +23,7 @@ defmodule TenSummonersTales.SummonerTest do
       expect_fetch_matches_on_mock()
       expect_fetch_match_on_mock()
 
-      Summoner.retrieve_summoner_opponents(summoner_name(), region())
+      SummonerFetcher.retrieve_summoner_opponents(summoner_name(), region())
     end
   end
 
@@ -50,9 +50,9 @@ defmodule TenSummonersTales.SummonerTest do
 
   defp expect_fetch_summoner_on_mock() do
     ServiceClientMock
-    |> expect(:fetch_summoner, fn actual_summoner_name, _actual_region ->
+    |> expect(:fetch_summoner, fn actual_summoner_name, actual_region ->
       assert actual_summoner_name == summoner_name()
-#      assert actual_region == region()  ## TODO: account for the mapping that needs to be done...
+      assert actual_region == region()
 
       %{name: summoner_name(), puuid: puuid()}
     end)
@@ -71,7 +71,7 @@ defmodule TenSummonersTales.SummonerTest do
   end
 
   defp region() do
-    "na1"
+    "NA1"
   end
 
   defp summoner_name() do
