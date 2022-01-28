@@ -15,11 +15,11 @@ defmodule TenSummonersTalesTest do
       FetchSummonerMock
       |> expect(:retrieve_summoner_opponents, fn _, _ ->
 
-        {:ok, participant_names: participant_names(), participant_matches: participant_matches()}
+        {:ok, participant_names: participant_names(), participant_matches: participant_matches(), match_region: region()}
       end)
 
       TrackSummonerMock
-      |> expect(:track_summoners, fn actual_participant_matches ->
+      |> expect(:track_summoners, fn actual_participant_matches, _ ->
         assert actual_participant_matches == participant_matches()
 
         {:ok}

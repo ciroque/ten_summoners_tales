@@ -29,7 +29,7 @@ defmodule TenSummonersTales.RiotApiClientTest do
         {:ok, %HTTPoison.Response{status_code: 200, body: response_body}}
       end)
 
-      %{name: name} = RiotApiClient.fetch_summoner(summoner_name, "NA1")
+      {:ok, %{name: name}} = RiotApiClient.fetch_summoner(summoner_name, "NA1")
 
       assert name == summoner_name
     end

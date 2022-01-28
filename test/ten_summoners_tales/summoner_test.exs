@@ -28,14 +28,15 @@ defmodule TenSummonersTales.SummonerTest do
   end
 
   defp expect_fetch_match_on_mock() do
+    {:ok, mids} = match_ids()
     ServiceClientMock
     |> expect(
         :fetch_match,
-        length(match_ids()),
+        length(mids),
         fn match_id, _region ->
-          assert match_ids() |> Enum.member?(match_id)
+          assert mids |> Enum.member?(match_id)
 
-          empty_match_participants()
+          {:ok, empty_match_participants()}
         end)
   end
 
@@ -54,7 +55,7 @@ defmodule TenSummonersTales.SummonerTest do
       assert actual_summoner_name == summoner_name()
       assert actual_region == region()
 
-      %{name: summoner_name(), puuid: puuid()}
+      {:ok, %{name: summoner_name(), puuid: puuid()}}
     end)
   end
 
@@ -63,7 +64,7 @@ defmodule TenSummonersTales.SummonerTest do
   end
 
   defp match_ids() do
-    ["matchId1", "matchId2"]
+  {:ok, ["matchId1", "matchId2"]}
   end
 
   defp puuid() do

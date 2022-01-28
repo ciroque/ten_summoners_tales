@@ -8,7 +8,8 @@ defmodule TenSummonersTales.TrackSummonerBehaviour do
 
     ## Parameters
 
-    - summoners: List of Maps representing the summoners that are to be tracked.
+    - participant_matches: List of objects mapping participants to matches.
+    - region:
   """
-  @callback track_summoners(list(map())) :: {:ok}
+  @callback track_summoners(list(map()), String.t()) :: {:ok}
 end

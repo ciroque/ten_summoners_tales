@@ -17,12 +17,18 @@ defmodule TenSummonersTales.SummonerRetriever do
   def retrieve_summoner_opponents(summoner_name, region) do
     region = String.upcase(region)
     with {:ok, match_region: match_region} <- routing_map(region),
-         %{puuid: puuid} <- riot_api().fetch_summoner(summoner_name, region),
+         {:ok, %{puuid: puuid}} <- riot_api().fetch_summoner(summoner_name, region),
         {:ok, participant_names: participant_names, participant_matches: participant_matches} <- retrieve_match_info(puuid, match_region)
       do
-        {:ok, participant_names: participant_names, participant_matches: participant_matches}
+        {
+          :ok,
+          participant_names: participant_names,
+          participant_matches: participant_matches,
+          match_region: match_region
+        }
 
     else
+      {:error, :rate_limit_exceeded} -> {:error, "Exceeded rate limit"}
       {:short, :no_matches} -> {:short, :no_matches}
       {:error, message} -> {:error, message}
     end
@@ -36,11 +42,11 @@ defmodule TenSummonersTales.SummonerRetriever do
     {:ok, participants: participants}
   end
 
-  defp extract_participant_matches(matches, participants) do
+  defp extract_participant_matches(matches, participants, region) do
     participant_matches = participants
-                         |> Enum.map(fn %{puuid: puuid, name: name} ->
+    |> Enum.map(fn %{puuid: puuid, name: name} ->
       matches = puuid |> find_participant_matches(matches)
-      %{puuid: puuid, name: name, matches: matches}
+      %{puuid: puuid, name: name, matches: matches, region: region}
     end)
 
     {:ok, participant_matches: participant_matches}
@@ -60,12 +66,12 @@ defmodule TenSummonersTales.SummonerRetriever do
     |> Enum.map(fn %{metadata: %{matchId: match_id}} -> match_id end)
   end
 
-  defp retrieve_match_info(puuid, region) do
-    with {:ok, match_ids} <- retrieve_match_ids(puuid, region),
-    {:ok, matches: matches} <- retrieve_matches(match_ids, region),
+  defp retrieve_match_info(puuid, match_region) do
+    with {:ok, match_ids} <- retrieve_match_ids(puuid, match_region),
+    {:ok, matches: matches} <- retrieve_matches(match_ids, match_region),
     {:ok, participants: participants} <- matches |> extract_participants(),
     {:ok, participant_names: participant_names} <- participants |> extract_participant_names(),
-    {:ok, participant_matches: participant_matches} <- matches |> extract_participant_matches(participants) do
+    {:ok, participant_matches: participant_matches} <- matches |> extract_participant_matches(participants, match_region) do
 
       {:ok, participant_names: participant_names, participant_matches: participant_matches}
     end
@@ -74,14 +80,15 @@ defmodule TenSummonersTales.SummonerRetriever do
   defp retrieve_match_ids(puuid, region) do
     case riot_api().fetch_matches(puuid, region) do
       [] -> {:short, :no_matches}
-      match_ids -> {:ok, match_ids}
+      {:ok, match_ids} -> {:ok, match_ids}
     end
   end
 
   defp retrieve_matches(match_ids, region) do
     matches = match_ids
     |> Enum.map(fn matchId ->
-      riot_api().fetch_match(matchId, region)
+      {:ok, match} = riot_api().fetch_match(matchId, region)
+      match
     end)
 
     {:ok, matches: matches}

@@ -3,6 +3,8 @@ defmodule TenSummonersTales.RiotApiClient do
 
   @behaviour TenSummonersTales.ServiceClientBehaviour
 
+  require Logger
+
   @impl true
   @doc """
     TenSummonersTales.RiotApiClient.fetch_summoner("ciroque", "na1")
@@ -46,9 +48,17 @@ defmodule TenSummonersTales.RiotApiClient do
     Application.get_env(:ten_summoners_tales, :riot_development_api_key)
   end
 
-  defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}})
-    when status_code in [200],
-    do: parse_body(body)
+  # TODO: Error handling
+  defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}}) do
+    case status_code do
+      status_code when status_code in [200] -> {:ok, parse_body(body)}
+      status_code when status_code in [429] ->
+        Logger.warn("Exceeded rate limit") # TODO: add correlation id
+        {:error, :rate_limit_exceeded}
+    end
+  end
+#    when status_code in [200],
+#    do: parse_body(body)
 
   defp parse_body(body) do
     with {:ok, body} <- Jason.decode(body, [keys: :atoms]) do

@@ -17,9 +17,14 @@ defmodule TenSummonersTales do
     case fetcher().retrieve_summoner_opponents(summoner_name, region) do
       {:error, [message: message]} -> "An error occurred processing your request: #{message}"
       {:short, :no_matches} -> "#{summoner_name} has not participated in any matches."
-      {:ok, participant_names: participant_names, participant_matches: participant_matches} ->
+      {
+        :ok,
+        participant_names: participant_names,
+        participant_matches: participant_matches,
+        match_region: match_region
+      } ->
 
-        participant_matches |> tracker().track_summoners()
+        participant_matches |> tracker().track_summoners(match_region)
 
         participant_names
     end
