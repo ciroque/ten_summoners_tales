@@ -6,7 +6,7 @@ Mox.defmock(TenSummonersTales.TrackSummonerMock, for: TenSummonersTales.TrackSum
 Mox.defmock(TenSummonersTales.RiotDevelopmentClientMock, for: TenSummonersTales.ServiceClientBehaviour)
 
 Application.put_env(:ten_summoners_tales, :http_adapter, Http.Mock)
-Application.put_env(:ten_summoners_tales, :fetcher, TenSummonersTales.RetrieveSummonerMock)
+Application.put_env(:ten_summoners_tales, :retriever, TenSummonersTales.RetrieveSummonerMock)
 Application.put_env(:ten_summoners_tales, :tracker, TenSummonersTales.TrackSummonerMock)
 Application.put_env(:ten_summoners_tales, :service_client, TenSummonersTales.RiotDevelopmentClientMock)
 

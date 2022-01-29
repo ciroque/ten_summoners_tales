@@ -14,7 +14,7 @@ defmodule TenSummonersTales do
 
   """
   def track_summoner(summoner_name, region) do
-    case fetcher().retrieve_summoner_opponents(summoner_name, region) do
+    case retriever().retrieve_summoner_opponents(summoner_name, region) do
       {:error, [message: message]} -> "An error occurred processing your request: #{message}"
       {:short, :no_matches} -> "#{summoner_name} has not participated in any matches."
       {
@@ -30,8 +30,8 @@ defmodule TenSummonersTales do
     end
   end
 
-  defp fetcher() do
-    Application.get_env(:ten_summoners_tales, :fetcher, TenSummonersTales.SummonerRetriever)
+  defp retriever() do
+    Application.get_env(:ten_summoners_tales, :retriever, TenSummonersTales.SummonerRetriever)
   end
 
   defp tracker() do

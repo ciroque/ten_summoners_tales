@@ -30,3 +30,4 @@ iex(1)> TenSummonersTales.track_summoner("boycold", "na1")
 - Throttling to avoid hitting rate limits, though with a real key this _should_ be okay. To fix it, though, implement 
   batching and / or backoff logic to allow the threshold to reset.
 - `TenSummonersTales.SummonerTracker.retrieve_new_matches` should be in a separate, well-tested, module.
+- Handle 403 from Riot API

@@ -79,7 +79,7 @@ defmodule TenSummonersTales.SummonerRetriever do
 
   defp retrieve_match_ids(puuid, region) do
     case riot_api().fetch_matches(puuid, region) do
-      [] -> {:short, :no_matches}
+      {:ok, []} -> {:short, :no_matches}
       {:ok, match_ids} -> {:ok, match_ids}
     end
   end
