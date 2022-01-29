@@ -49,11 +49,11 @@ defmodule TenSummonersTales.SummonerRetriever do
     {:ok, participants: participants}
   end
 
-  defp extract_participant_matches(matches, participants, region) do
+  defp extract_participant_matches(matches, participants) do
     participant_matches = participants
     |> Enum.map(fn %{puuid: puuid, name: name} ->
       matches = puuid |> find_participant_matches(matches)
-      %{puuid: puuid, name: name, matches: matches, region: region}
+      %{puuid: puuid, name: name, matches: matches}
     end)
 
     {:ok, participant_matches: participant_matches}
@@ -78,7 +78,7 @@ defmodule TenSummonersTales.SummonerRetriever do
     {:ok, matches: matches} <- retrieve_matches(match_ids, match_region),
     {:ok, participants: participants} <- matches |> extract_participants(),
     {:ok, participant_names: participant_names} <- participants |> extract_participant_names(),
-    {:ok, participant_matches: participant_matches} <- matches |> extract_participant_matches(participants, match_region) do
+    {:ok, participant_matches: participant_matches} <- matches |> extract_participant_matches(participants) do
 
       {:ok, participant_names: participant_names, participant_matches: participant_matches}
     end

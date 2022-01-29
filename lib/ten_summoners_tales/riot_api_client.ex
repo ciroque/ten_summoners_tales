@@ -17,8 +17,14 @@ defmodule TenSummonersTales.RiotApiClient do
   @doc """
     TenSummonersTales.RiotApiClient.fetch_matches("Q2OArd-PlZFka3pmtHfXrjY9M8nAlRtfa8iCb_c3Jk5kXmDAKxjy7U4DpT5Hcm-6WQvaX4lVfEFbCQ", "AMERICAS")
   """
-  def fetch_matches(puuid, region, match_count \\ 5) do
-    url(region, matches_by_puuid_path(puuid, match_count)) |> fetch()
+  def fetch_matches(puuid, region, match_count \\ 5)
+
+  def fetch_matches(puuid, region, :all_matches) do
+    matches_by_puuid_path(puuid) |> fetch_the_matches(region)
+  end
+
+  def fetch_matches(puuid, region, match_count) do
+    matches_by_puuid_path(puuid, match_count) |> fetch_the_matches(region)
   end
 
   @impl true
@@ -33,6 +39,10 @@ defmodule TenSummonersTales.RiotApiClient do
     url
     |> http_adapter().get(riot_api_key_header())
     |> handle_response()
+  end
+
+  defp fetch_the_matches(url, region) do
+    url(region, url) |> fetch()
   end
 
   defp riot_api_key_header() do
@@ -63,8 +73,6 @@ defmodule TenSummonersTales.RiotApiClient do
         {:error, :rate_limit_exceeded}
     end
   end
-#    when status_code in [200],
-#    do: parse_body(body)
 
   defp parse_body(body) do
     with {:ok, body} <- Jason.decode(body, [keys: :atoms]) do
@@ -84,15 +92,13 @@ defmodule TenSummonersTales.RiotApiClient do
     |> String.replace("{matchId}", matchId)
   end
 
-  defp matches_by_puuid_path(puuid, count) do
-    path = Application.get_env(:ten_summoners_tales, :riot_development_api_matches_path)
+  defp matches_by_puuid_path(puuid) do
+    Application.get_env(:ten_summoners_tales, :riot_development_api_matches_path)
     |> String.replace("{puuid}", puuid)
+  end
 
-    if count != -1 do
-      "#{path}?count=#{count}"
-    else
-      path
-    end
+  defp matches_by_puuid_path(puuid, count) do
+    "#{matches_by_puuid_path(puuid)}?count=#{count}"
   end
 
   defp summoner_name_path(summoner_name) do

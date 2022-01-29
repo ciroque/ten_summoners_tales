@@ -31,12 +31,12 @@ defmodule TenSummonersTales.SummonerTracker do
     |> Map.put(:count, count)
     |> Map.put(:match_region, match_region)
 
-    Process.send_after(self(), :follow, polling_period())
+    Process.send_after(self(), :track, polling_period())
 
     {:noreply, state}
   end
 
-  def handle_info(:follow, %{count: count, participant_matches: participant_matches, match_region: match_region} = state) do
+  def handle_info(:track, %{count: count, participant_matches: participant_matches, match_region: match_region} = state) do
     IO.puts("#{DateTime.utc_now} Polling...")
     count = count - 1
 
@@ -53,7 +53,7 @@ defmodule TenSummonersTales.SummonerTracker do
     # Could consider `spawn_link`, would then have to figure out how to handle updating state
     # Could also simply grab the time before and after calling `retrieve_new_matches` and subtracting the difference from the polling_period()
     if count > 0 do
-      Process.send_after(self(), :follow, polling_period() - (ended - started))
+      Process.send_after(self(), :track, polling_period() - (ended - started))
     end
 
     {:noreply, state}
@@ -63,7 +63,7 @@ defmodule TenSummonersTales.SummonerTracker do
     participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
       :timer.sleep(80) ## TODO: Poor mans throttling, ideally the requests would be put into batches and throttled...
-      case riot_api().fetch_matches(puuid, match_region, -1) do
+      case riot_api().fetch_matches(puuid, match_region, :all_matches) do
         {:ok, match_ids} ->
           new_matches = match_ids -- matches
 
