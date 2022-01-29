@@ -28,8 +28,12 @@ defmodule TenSummonersTales.SummonerRetriever do
         }
 
     else
+      # NOTE: ALl of these should include correlation ids that are also written to the logs to aid in debugging.
+      # That is, don't return the actual error to the caller, but provide a means to correlate this error to log
+      # entries that contain the details...
       {:error, :rate_limit_exceeded} -> {:error, message: "Exceeded rate limit"}
       {:error, :invalid_api_token} -> {:error, message: "Unauthorized, ensure the API token is valid"}
+      {:error, :invalid_request} -> {:error, message: "The request was invalid"}
       {:error, :region_not_found} -> {:error, message: "Region '#{region}' was not found"}
       {:short, :no_matches} -> {:short, :no_matches}
     end
@@ -56,7 +60,7 @@ defmodule TenSummonersTales.SummonerRetriever do
   defp extract_participant_names(participants) do
     participant_names = participants |> Enum.map(fn %{name: name} -> name end)
 
-    {:ok, participant_names: participant_names}
+    {:ok, participant_names: participant_names |> Enum.sort |> Enum.uniq }
   end
 
   defp find_participant_matches(puuid, matches) do

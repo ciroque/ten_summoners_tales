@@ -63,7 +63,7 @@ defmodule TenSummonersTales.SummonerTracker do
     participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
       :timer.sleep(80) ## TODO: Poor mans throttling, ideally the requests would be put into batches and throttled...
-      case riot_api().fetch_matches(puuid, match_region) do
+      case riot_api().fetch_matches(puuid, match_region, -1) do
         {:ok, match_ids} ->
           new_matches = match_ids -- matches
 

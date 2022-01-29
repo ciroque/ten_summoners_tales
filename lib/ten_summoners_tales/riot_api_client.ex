@@ -52,6 +52,9 @@ defmodule TenSummonersTales.RiotApiClient do
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}}) do
     case status_code do
       status_code when status_code == 200 -> {:ok, parse_body(body)}
+      status_code when status_code == 400 ->
+        Logger.error("#{__MODULE__} Invalid Request") # TODO: add correlation id
+        {:error, :invalid_request}
       status_code when status_code == 403 ->
         Logger.error("#{__MODULE__} Unauthorized") # TODO: add correlation id
         {:error, :invalid_api_token}
@@ -82,9 +85,14 @@ defmodule TenSummonersTales.RiotApiClient do
   end
 
   defp matches_by_puuid_path(puuid, count) do
-    Application.get_env(:ten_summoners_tales, :riot_development_api_matches_path)
+    path = Application.get_env(:ten_summoners_tales, :riot_development_api_matches_path)
     |> String.replace("{puuid}", puuid)
-    |> String.replace("{count}", "#{count}")
+
+    if count != -1 do
+      "#{path}?count=#{count}"
+    else
+      path
+    end
   end
 
   defp summoner_name_path(summoner_name) do
