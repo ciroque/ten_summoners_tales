@@ -74,6 +74,7 @@ defmodule TenSummonersTales.SummonerTracker do
           participant |> Map.put(:matches, matches ++ new_matches)
 
         {:error, :rate_limit_exceeded} ->
+          Logger.warn("Rate limit exceeded, subsequent Summoners may not be updated on this poll")
           participant
       end
     end)

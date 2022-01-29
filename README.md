@@ -31,3 +31,4 @@ iex(1)> TenSummonersTales.track_summoner("boycold", "na1")
   batching and / or backoff logic to allow the threshold to reset.
 - `TenSummonersTales.SummonerTracker.retrieve_new_matches` should be in a separate, well-tested, module.
 - Handle 403 from Riot API
+- Complete documentation
