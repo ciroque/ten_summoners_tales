@@ -54,7 +54,7 @@ defmodule TenSummonersTales.SummonerRetriever do
       %{puuid: puuid, name: name, matches: matches, region: region}
     end)
 
-    {:ok, participant_matches: participant_matches}
+    {:ok, participant_matches: participant_matches |> Enum.sort |> Enum.uniq}
   end
 
   defp extract_participant_names(participants) do
