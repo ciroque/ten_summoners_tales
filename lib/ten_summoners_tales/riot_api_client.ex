@@ -51,9 +51,12 @@ defmodule TenSummonersTales.RiotApiClient do
   # TODO: Error handling
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}}) do
     case status_code do
-      status_code when status_code in [200] -> {:ok, parse_body(body)}
-      status_code when status_code in [429] ->
-        Logger.warn("Exceeded rate limit") # TODO: add correlation id
+      status_code when status_code == 200 -> {:ok, parse_body(body)}
+      status_code when status_code == 403 ->
+        Logger.error("#{__MODULE__} Unauthorized") # TODO: add correlation id
+        {:error, :invalid_api_token}
+      status_code when status_code == 429 ->
+        Logger.error("#{__MODULE__} Exceeded rate limit") # TODO: add correlation id
         {:error, :rate_limit_exceeded}
     end
   end

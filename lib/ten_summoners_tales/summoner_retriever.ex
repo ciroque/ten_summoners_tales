@@ -28,9 +28,10 @@ defmodule TenSummonersTales.SummonerRetriever do
         }
 
     else
-      {:error, :rate_limit_exceeded} -> {:error, "Exceeded rate limit"}
+      {:error, :rate_limit_exceeded} -> {:error, message: "Exceeded rate limit"}
+      {:error, :invalid_api_token} -> {:error, message: "Unauthorized, ensure the API token is valid"}
+      {:error, :region_not_found} -> {:error, message: "Region '#{region}' was not found"}
       {:short, :no_matches} -> {:short, :no_matches}
-      {:error, message} -> {:error, message}
     end
   end
 
@@ -104,7 +105,7 @@ defmodule TenSummonersTales.SummonerRetriever do
       region when region in ["BR1", "LA1", "LA2", "LAS", "NA1", "OC1", "OCE"] -> {:ok, match_region: "AMERICAS"}
       region when region in ["KR", "JP1"] -> {:ok, match_region: "ASIA"}
       region when region in ["EUN1", "EUW1", "RU", "TR1"] -> {:ok, match_region: "EUROPE"}
-      _ -> {:error, message: "Region '#{region}' was not found"}
+      _ -> {:error, :region_not_found}
     end
   end
 end
