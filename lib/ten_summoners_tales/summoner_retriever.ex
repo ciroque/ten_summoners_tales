@@ -41,16 +41,16 @@ defmodule TenSummonersTales.SummonerRetriever do
 
   defp extract_participants(matches) do
     participants = matches
-   |> Enum.flat_map(fn %{ info: %{ participants: participants }} -> participants end)
-   |> Enum.map(fn %{puuid: puuid, summonerName: name} -> %{puuid: puuid, name: name} end)
+    |> Enum.flat_map(fn %{ info: %{ participants: participants }} -> participants end)
+    |> Enum.map(fn %{puuid: puuid, summonerName: name} -> %{puuid: puuid, name: name} end)
+    |> Enum.sort
+    |> Enum.uniq
 
     {:ok, participants: participants}
   end
 
   defp extract_participant_matches(matches, participants, region) do
     participant_matches = participants
-    |> Enum.sort
-    |> Enum.uniq
     |> Enum.map(fn %{puuid: puuid, name: name} ->
       matches = puuid |> find_participant_matches(matches)
       %{puuid: puuid, name: name, matches: matches, region: region}
