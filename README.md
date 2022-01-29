@@ -13,6 +13,8 @@ git clone git@github.com:ciroque/ten_summoners_tales.git
 
 cd ten_summoners_tales
 
+export RIOT_API_KEY=<your key here>
+
 mix deps.get
 
 iex -S mix
