@@ -5,18 +5,22 @@ defmodule TenSummonersTales.SummonerRetriever do
 
   @impl true
   @doc """
+    Retrieves and transforms data from the Riot Developer API into a shape that can be used to report the user names and
+    track the associated Summoners.
 
     Returns:
-      A list of maps containing the summoners and their associated puuids.
+      - A list of string representing the names of the associated Summoners.
+      - A list of maps that relate Summoners to their matches.
+      - The region to be used for the Match API.
 
     Examples:
-      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("bigfatjuicer", "NA")`
-      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("bigfatjuicer", "NA")`
-      `TenSummonersTales.SummonerRetriever.fetch_summoner_opponents("Jobless Canadian", "NA")`
+      `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("ciroque", "na1")`
+      `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("bigfatjuicer", "na1")`
+      `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("Jobless Canadian", "na1")`
   """
   def retrieve_summoner_opponents(summoner_name, region) do
     region = String.upcase(region)
-    with {:ok, match_region: match_region} <- routing_map(region),
+    with {:ok, match_region: match_region} <- look_up_match_region_for(region),
          {:ok, %{puuid: puuid}} <- riot_api().fetch_summoner(summoner_name, region),
         {:ok, participant_names: participant_names, participant_matches: participant_matches} <- retrieve_match_info(puuid, match_region)
       do
@@ -28,12 +32,12 @@ defmodule TenSummonersTales.SummonerRetriever do
         }
 
     else
-      # NOTE: ALl of these should include correlation ids that are also written to the logs to aid in debugging.
+      # NOTE: All of these should include correlation ids that are also written to the logs to aid in debugging.
       # That is, don't return the actual error to the caller, but provide a means to correlate this error to log
       # entries that contain the details...
-      {:error, :rate_limit_exceeded} -> {:error, message: "Exceeded rate limit"}
       {:error, :invalid_api_token} -> {:error, message: "Unauthorized, ensure the API token is valid"}
       {:error, :invalid_request} -> {:error, message: "The request was invalid"}
+      {:error, :rate_limit_exceeded} -> {:error, message: "Exceeded rate limit"}
       {:error, :region_not_found} -> {:error, message: "Region '#{region}' was not found"}
       {:short, :no_matches} -> {:short, :no_matches}
     end
@@ -51,9 +55,9 @@ defmodule TenSummonersTales.SummonerRetriever do
 
   defp extract_participant_matches(matches, participants) do
     participant_matches = participants
-    |> Enum.map(fn %{puuid: puuid, name: name} ->
+    |> Enum.map(fn %{puuid: puuid} = participant ->
       matches = puuid |> find_participant_matches(matches)
-      %{puuid: puuid, name: name, matches: matches}
+      participant |> Map.put(:matches, matches)
     end)
 
     {:ok, participant_matches: participant_matches}
@@ -62,7 +66,7 @@ defmodule TenSummonersTales.SummonerRetriever do
   defp extract_participant_names(participants) do
     participant_names = participants |> Enum.map(fn %{name: name} -> name end)
 
-    {:ok, participant_names: participant_names |> Enum.sort |> Enum.uniq }
+    {:ok, participant_names: participant_names |> Enum.sort }
   end
 
   defp find_participant_matches(puuid, matches) do
@@ -106,7 +110,7 @@ defmodule TenSummonersTales.SummonerRetriever do
   end
 
   # Sauce: https://developer.riotgames.com/docs/lol#_routing-values
-  defp routing_map(region) do
+  defp look_up_match_region_for(region) do
     case region do
       region when region in ["BR1", "LA1", "LA2", "LAS", "NA1", "OC1", "OCE"] -> {:ok, match_region: "AMERICAS"}
       region when region in ["KR", "JP1"] -> {:ok, match_region: "ASIA"}
