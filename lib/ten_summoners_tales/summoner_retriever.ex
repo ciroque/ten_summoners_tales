@@ -13,7 +13,7 @@ defmodule TenSummonersTales.SummonerRetriever do
       - A list of maps that relate Summoners to their matches.
       - The region to be used for the Match API.
 
-    Examples:
+    ## Examples
       `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("ciroque", "na1")`
       `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("bigfatjuicer", "na1")`
       `TenSummonersTales.SummonerRetriever.retrieve_summoner_opponents("Jobless Canadian", "na1")`
@@ -77,6 +77,16 @@ defmodule TenSummonersTales.SummonerRetriever do
     |> Enum.map(fn %{metadata: %{matchId: match_id}} -> match_id end)
   end
 
+  # Sauce: https://developer.riotgames.com/docs/lol#_routing-values
+  defp look_up_match_region_for(region) do
+    case region do
+      region when region in ["BR1", "LA1", "LA2", "LAS", "NA1", "OC1", "OCE"] -> {:ok, match_region: "AMERICAS"}
+      region when region in ["KR", "JP1"] -> {:ok, match_region: "ASIA"}
+      region when region in ["EUN1", "EUW1", "RU", "TR1"] -> {:ok, match_region: "EUROPE"}
+      _ -> {:error, :region_not_found}
+    end
+  end
+
   defp retrieve_match_info(puuid, match_region) do
     with {:ok, match_ids} <- retrieve_match_ids(puuid, match_region),
     {:ok, matches: matches} <- retrieve_matches(match_ids, match_region),
@@ -107,15 +117,5 @@ defmodule TenSummonersTales.SummonerRetriever do
 
   defp riot_api() do
     Application.get_env(:ten_summoners_tales, :service_client, TenSummonersTales.RiotApiClient)
-  end
-
-  # Sauce: https://developer.riotgames.com/docs/lol#_routing-values
-  defp look_up_match_region_for(region) do
-    case region do
-      region when region in ["BR1", "LA1", "LA2", "LAS", "NA1", "OC1", "OCE"] -> {:ok, match_region: "AMERICAS"}
-      region when region in ["KR", "JP1"] -> {:ok, match_region: "ASIA"}
-      region when region in ["EUN1", "EUW1", "RU", "TR1"] -> {:ok, match_region: "EUROPE"}
-      _ -> {:error, :region_not_found}
-    end
   end
 end

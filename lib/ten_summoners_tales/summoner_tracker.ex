@@ -9,12 +9,18 @@ defmodule TenSummonersTales.SummonerTracker do
 
   use GenServer
 
+  ## ###################################################################################################################
+  ## Public API
+
   @doc """
     TenSummonersTales.SummonerTracker.track_summoners([])
   """
   def track_summoners(participant_matches, match_region) do
     GenServer.cast(__MODULE__, {:track, participant_matches, match_region, polling_period(), poll_count()})
   end
+
+  ## ###################################################################################################################
+  ## GenServer callbacks
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -59,6 +65,17 @@ defmodule TenSummonersTales.SummonerTracker do
     {:noreply, state}
   end
 
+  ## ###################################################################################################################
+  ## Privates
+
+  defp poll_count() do
+    Application.get_env(:ten_summoners_tales, :polling_count, 60)
+  end
+
+  defp polling_period() do
+    Application.get_env(:ten_summoners_tales, :polling_period, 60 * 1_000)
+  end
+
   defp retrieve_new_matches(participant_matches, match_region) do
     participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
@@ -78,14 +95,6 @@ defmodule TenSummonersTales.SummonerTracker do
           participant
       end
     end)
-  end
-
-  defp polling_period() do
-    Application.get_env(:ten_summoners_tales, :polling_period, 60 * 1_000)
-  end
-
-  defp poll_count() do
-    Application.get_env(:ten_summoners_tales, :polling_count, 60)
   end
 
   defp riot_api() do

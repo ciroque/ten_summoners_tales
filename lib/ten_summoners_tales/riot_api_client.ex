@@ -7,17 +7,37 @@ defmodule TenSummonersTales.RiotApiClient do
 
   @impl true
   @doc """
-    TenSummonersTales.RiotApiClient.fetch_summoner("ciroque", "na1")
+
+    ## Examples
+      `TenSummonersTales.RiotApiClient.fetch_match("NA1_4187683997", "AMERICAS")`
+  """
+  def fetch_match(match_id, region) do
+    url(region, match_by_id_path(match_id)) |> fetch()
+  end
+
+  @impl true
+  @doc """
+
+    ## Examples
+      `TenSummonersTales.RiotApiClient.fetch_matches("Q2OArd-PlZFka3pmtHfXrjY9M8nAlRtfa8iCb_c3Jk5kXmDAKxjy7U4DpT5Hcm-6WQvaX4lVfEFbCQ", "AMERICAS")`
+  """
+  def fetch_matches(puuid, region, match_count \\ 5)
+
+  @impl true
+  @doc """
+
+    ## Examples
+      `TenSummonersTales.RiotApiClient.fetch_summoner("ciroque", "na1")`
   """
   def fetch_summoner(summoner_name, region) do
     url(region, summoner_name_path(summoner_name)) |> fetch()
   end
 
-  @impl true
-  @doc """
-    TenSummonersTales.RiotApiClient.fetch_matches("Q2OArd-PlZFka3pmtHfXrjY9M8nAlRtfa8iCb_c3Jk5kXmDAKxjy7U4DpT5Hcm-6WQvaX4lVfEFbCQ", "AMERICAS")
-  """
-  def fetch_matches(puuid, region, match_count \\ 5)
+  defp fetch(url) do
+    url
+    |> http_adapter().get(riot_api_key_header())
+    |> handle_response()
+  end
 
   def fetch_matches(puuid, region, :all_matches) do
     matches_by_puuid_path(puuid) |> fetch_the_matches(region)
@@ -27,38 +47,10 @@ defmodule TenSummonersTales.RiotApiClient do
     matches_by_puuid_path(puuid, match_count) |> fetch_the_matches(region)
   end
 
-  @impl true
-  @doc """
-    TenSummonersTales.RiotApiClient.fetch_match("NA1_4187683997", "AMERICAS")
-  """
-  def fetch_match(match_id, region) do
-    url(region, match_by_id_path(match_id)) |> fetch()
-  end
-
-  defp fetch(url) do
-    url
-    |> http_adapter().get(riot_api_key_header())
-    |> handle_response()
-  end
-
   defp fetch_the_matches(url, region) do
     url(region, url) |> fetch()
   end
 
-  defp riot_api_key_header() do
-    ["X-Riot-Token": riot_api_key()]
-  end
-
-  defp url(region, path) do
-    host = host(region)
-    "#{host}#{path}"
-  end
-
-  defp riot_api_key() do
-    Application.get_env(:ten_summoners_tales, :riot_development_api_key)
-  end
-
-  # TODO: Error handling
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}}) do
     case status_code do
       status_code when status_code == 200 -> {:ok, parse_body(body)}
@@ -74,17 +66,13 @@ defmodule TenSummonersTales.RiotApiClient do
     end
   end
 
-  defp parse_body(body) do
-    with {:ok, body} <- Jason.decode(body, [keys: :atoms]) do
-      body
-    else
-      _ -> body
-    end
-  end
-
   defp host(region) do
     host = Application.get_env(:ten_summoners_tales, :riot_development_api_host)
     "https://#{region}.#{host}"
+  end
+
+  defp http_adapter() do
+    Application.get_env(:ten_summoners_tales, :http_adapter, HTTPoison)
   end
 
   defp match_by_id_path(matchId) do
@@ -101,13 +89,30 @@ defmodule TenSummonersTales.RiotApiClient do
     "#{matches_by_puuid_path(puuid)}?count=#{count}"
   end
 
+  defp parse_body(body) do
+    with {:ok, body} <- Jason.decode(body, [keys: :atoms]) do
+      body
+    else
+      _ -> body
+    end
+  end
+
+  defp riot_api_key() do
+    Application.get_env(:ten_summoners_tales, :riot_development_api_key)
+  end
+
+  defp riot_api_key_header() do
+    ["X-Riot-Token": riot_api_key()]
+  end
+
   defp summoner_name_path(summoner_name) do
     path = Application.get_env(:ten_summoners_tales, :riot_development_api_summoner_path)
 
     "#{path}#{summoner_name}"
   end
 
-  defp http_adapter() do
-    Application.get_env(:ten_summoners_tales, :http_adapter, HTTPoison)
+  defp url(region, path) do
+    host = host(region)
+    "#{host}#{path}"
   end
 end
