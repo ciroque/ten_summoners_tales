@@ -23,6 +23,14 @@ defmodule TenSummonersTales.RiotApiClient do
   """
   def fetch_matches(puuid, region, match_count \\ 5)
 
+  def fetch_matches(puuid, region, :all_matches) do
+    matches_by_puuid_path(puuid) |> fetch_the_matches(region)
+  end
+
+  def fetch_matches(puuid, region, match_count) do
+    matches_by_puuid_path(puuid, match_count) |> fetch_the_matches(region)
+  end
+
   @impl true
   @doc """
 
@@ -37,14 +45,6 @@ defmodule TenSummonersTales.RiotApiClient do
     url
     |> http_adapter().get(riot_api_key_header())
     |> handle_response()
-  end
-
-  def fetch_matches(puuid, region, :all_matches) do
-    matches_by_puuid_path(puuid) |> fetch_the_matches(region)
-  end
-
-  def fetch_matches(puuid, region, match_count) do
-    matches_by_puuid_path(puuid, match_count) |> fetch_the_matches(region)
   end
 
   defp fetch_the_matches(url, region) do
