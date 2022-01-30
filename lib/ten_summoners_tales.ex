@@ -10,10 +10,10 @@ defmodule TenSummonersTales do
 
   ## Examples
 
-      iex> TenSummonersTales.track_summoner("boycold", "na1")
+      iex> TenSummonersTales.fetch_and_track_associated_summoners_for("boycold", "na1")
 
   """
-  def track_summoner(summoner_name, region) do
+  def fetch_and_track_associated_summoners_for(summoner_name, region) do
     case retriever().retrieve_summoner_opponents(summoner_name, region) do
       {:error, [message: message]} -> "An error occurred processing your request: #{message}"
       {:short, :no_matches} -> "#{summoner_name} has not participated in any matches."

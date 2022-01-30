@@ -10,7 +10,7 @@ entity RiotApiClient
 entity SummonerTracker
 boundary RiotDevelopmentApi
 
-IexUser -> TenSummonersTales : track_summoner(name, region)
+IexUser -> TenSummonersTales : fetch_and_track_associated_summoners_for(name, region)
 TenSummonersTales -> Summoner : retrieve_summoner_opponents(summoner_name, region)
 Summoner -> RiotApiClient : fetch_summoner
 RiotApiClient -> RiotDevelopmentApi : Summoner-V4 (/lol/summoner/v4/summoners/by-name/{summonerName})

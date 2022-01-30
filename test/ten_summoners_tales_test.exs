@@ -25,7 +25,7 @@ defmodule TenSummonersTalesTest do
         {:ok}
       end)
 
-      summoners = TenSummonersTales.track_summoner(summoner_name(), region())
+      summoners = TenSummonersTales.fetch_and_track_associated_summoners_for(summoner_name(), region())
 
       assert [summoner_name()] == summoners
     end

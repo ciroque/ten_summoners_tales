@@ -6,6 +6,14 @@ Implementation to track Summoner's game play using the Riot Developer API.
 
 ![Summoner Lookup Sequence](./docs/summoner_lookup_sequence.svg)
 
+## Tests
+
+```bash
+mix test
+```
+
+Note that the tests are far from comprehensive at this point. 
+
 ## Run
 
 ```bash
@@ -19,9 +27,9 @@ mix deps.get
 
 iex -S mix
 
-iex(1)> TenSummonersTales.track_summoner("ciroque", "qwerty")
-iex(1)> TenSummonersTales.track_summoner("ciroque", "na1")
-iex(1)> TenSummonersTales.track_summoner("boycold", "na1")
+iex(1)> TenSummonersTales.fetch_and_track_associated_summoners_for("ciroque", "qwerty")
+iex(1)> TenSummonersTales.fetch_and_track_associated_summoners_for("ciroque", "na1")
+iex(1)> TenSummonersTales.fetch_and_track_associated_summoners_for("boycold", "na1")
 ```
 
 ## TODO
