@@ -47,8 +47,7 @@ defmodule TenSummonersTales.SummonerTracker do
     count = count - 1
 
     started = :os.system_time(:millisecond) # Poor man's drift compensation, meh.
-    participant_matches = participant_matches |> retrieve_new_matches(match_region)
-    drift_correction = :os.system_time(:millisecond) - started
+    participant_matches = participant_matches |> update_matches(match_region)
 
     state = state
     |> Map.put(:count, count)
@@ -59,7 +58,7 @@ defmodule TenSummonersTales.SummonerTracker do
     # Could consider `spawn_link`, would then have to figure out how to handle updating state
     # Could also simply grab the time before and after calling `retrieve_new_matches` and subtracting the difference from the polling_period()
     if count > 0 do
-      Process.send_after(self(), :track, polling_period() - drift_correction)
+      Process.send_after(self(), :track, polling_period() - (:os.system_time(:millisecond) - started))
     else
       IO.puts("Tracking complete.")
     end
@@ -78,7 +77,7 @@ defmodule TenSummonersTales.SummonerTracker do
     Application.get_env(:ten_summoners_tales, :polling_period, 60 * 1_000)
   end
 
-  defp retrieve_new_matches(participant_matches, match_region) do
+  defp update_matches(participant_matches, match_region) do
     participant_matches
     |> Enum.map(fn %{puuid: puuid, name: name, matches: matches} = participant ->
       :timer.sleep(80) ## TODO: Poor mans throttling, ideally the requests would be put into batches and throttled...

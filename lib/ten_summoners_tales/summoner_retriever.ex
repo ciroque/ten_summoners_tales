@@ -39,6 +39,8 @@ defmodule TenSummonersTales.SummonerRetriever do
       {:error, :invalid_request} -> {:error, message: "The request was invalid"}
       {:error, :rate_limit_exceeded} -> {:error, message: "Exceeded rate limit"}
       {:error, :region_not_found} -> {:error, message: "Region '#{region}' was not found"}
+      {:error, :service_not_available} -> {:error, message: "The service is not available, check the Riot API status: https://developer.riotgames.com/api-status/"}
+      {:error, :summoner_not_found} -> {:error, message: "Summoner '#{summoner_name}' was not found"}
       {:short, :no_matches} -> {:short, :no_matches}
     end
   end

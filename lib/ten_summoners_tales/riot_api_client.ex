@@ -60,9 +60,15 @@ defmodule TenSummonersTales.RiotApiClient do
       status_code when status_code == 403 ->
         Logger.error("#{__MODULE__} Unauthorized") # TODO: add correlation id
         {:error, :invalid_api_token}
+      status_code when status_code == 404 ->
+        Logger.error("#{__MODULE__} Not Found") # TODO: add correlation id
+        {:error, :summoner_not_found}
       status_code when status_code == 429 ->
         Logger.error("#{__MODULE__} Exceeded rate limit") # TODO: add correlation id
         {:error, :rate_limit_exceeded}
+      status_code when status_code == 503 ->
+        Logger.error("#{__MODULE__} Service not available") # TODO: add correlation id
+        {:error, :service_not_available}
     end
   end
 
