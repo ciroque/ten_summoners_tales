@@ -48,7 +48,7 @@ defmodule TenSummonersTales.SummonerTracker do
 
     started = :os.system_time(:millisecond) # Poor man's drift compensation, meh.
     participant_matches = participant_matches |> retrieve_new_matches(match_region)
-    ended = :os.system_time(:millisecond)
+    drift_correction = :os.system_time(:millisecond) - started
 
     state = state
     |> Map.put(:count, count)
@@ -59,7 +59,9 @@ defmodule TenSummonersTales.SummonerTracker do
     # Could consider `spawn_link`, would then have to figure out how to handle updating state
     # Could also simply grab the time before and after calling `retrieve_new_matches` and subtracting the difference from the polling_period()
     if count > 0 do
-      Process.send_after(self(), :track, polling_period() - (ended - started))
+      Process.send_after(self(), :track, polling_period() - drift_correction)
+    else
+      IO.puts("Tracking complete.")
     end
 
     {:noreply, state}
