@@ -39,3 +39,8 @@ iex(1)> TenSummonersTales.fetch_and_track_associated_summoners_for("boycold", "n
   batching and / or backoff logic to allow the threshold to reset.
 - `TenSummonersTales.SummonerTracker.retrieve_new_matches` should be in a separate, well-tested, module.
 - Complete documentation
+- throttling ideas;
+  - https://akoutmos.com/post/rate-limiting-with-genservers/
+  - https://en.m.wikipedia.org/wiki/Token_bucket
+  - https://hexdocs.pm/ex_rated/ExRated.html
+  - https://www.useanvil.com/blog/engineering/throttling-and-consuming-apis-with-429-rate-limits/
